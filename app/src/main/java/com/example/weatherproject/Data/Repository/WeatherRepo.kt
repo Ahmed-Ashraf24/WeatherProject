@@ -15,10 +15,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class WeatherRepo(val remoteSource: RemoteWeatherClient,val localDatabase: WeatherCachingClint): IWeatherRepo {
-    override fun getForecast(): Flow<WeatherData> = flow {
+    override fun getForecast(lat:Double,lon: Double): Flow<WeatherData> = flow {
         while (true) {
             try {
-                val result = remoteSource.getWeather(31.15,32.18)
+                val result = remoteSource.getWeather(lat,lon)
                 localDatabase.cacheWeather(result)
 
             }catch (e:Exception){

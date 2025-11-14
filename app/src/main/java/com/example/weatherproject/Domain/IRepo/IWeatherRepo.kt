@@ -6,7 +6,7 @@ import com.example.weatherproject.Domain.Entity.FavWeather
 import kotlinx.coroutines.flow.Flow
 
 interface IWeatherRepo {
-     fun getForecast(): Flow<WeatherData>
+     fun getForecast(lat: Double,lon: Double): Flow<WeatherData>
     suspend fun addToFav(favWeather: FavWeather)
     suspend fun removeToFav(favWeather: FavWeather)
 

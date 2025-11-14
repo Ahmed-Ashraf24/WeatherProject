@@ -62,13 +62,13 @@ fun WeatherDetailComponent(
                     .padding(bottom = 18.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(Modifier.weight(1f)) {
+
                     Icon(
                         painterResource(R.drawable.outline_view_list_24),
                         "favList",
                         tint = Color.White,
                         modifier = Modifier.clickable { onListClicked() })
-                }
+
                 Row(
                     Modifier.weight(1f),
                     horizontalArrangement = Arrangement.Center,
@@ -85,7 +85,7 @@ fun WeatherDetailComponent(
 
                     )
                 }
-                Row(Modifier.weight(1f), horizontalArrangement = Arrangement.End) {
+
                     Icon(
                         if (isFav) painterResource(R.drawable.filled_favorite_ic)
                     else painterResource(R.drawable.outline_favorite_24),
@@ -95,7 +95,7 @@ fun WeatherDetailComponent(
                         contentDescription = "fav",
                         tint = Color.White
                     )
-                }
+
             }
             Image(painter = painterResource(weather.weatherIconRes), "weather icon")
             Text(

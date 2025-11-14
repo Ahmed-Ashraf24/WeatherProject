@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherproject.Data.DataSource.LocalSource.Room.RoomWeatherDataSource
 import com.example.weatherproject.Data.DataSource.RemoteSource.OpenMeteoAPI.OpenMeteoWeather
-import com.example.weatherproject.Data.Model.API.RetrofitClinet.WeatherRetrofitClient
 import com.example.weatherproject.Domain.Entity.WeatherData
 import com.example.weatherproject.Data.Repository.WeatherRepo
 import com.example.weatherproject.Domain.Entity.FavWeather
@@ -14,13 +13,12 @@ import com.example.weatherproject.Domain.Entity.toUIForecastWeather
 import com.example.weatherproject.Domain.Entity.toUIWeather
 import com.example.weatherproject.Presentation.UIModel.UIForecastWeather
 import com.example.weatherproject.Presentation.UIModel.UIWeather
-import com.example.weatherproject.Presentation.UIModel.toFavWeather
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
-class WeatherViewModel: ViewModel() {
+class WeatherViewModel(): ViewModel() {
 
     private val _weatherData =MutableStateFlow<UIWeather?>(null)
     val weatherData: StateFlow<UIWeather?> = _weatherData
@@ -30,13 +28,13 @@ class WeatherViewModel: ViewModel() {
     val favWeather: StateFlow<List<UIForecastWeather>?> = _favWeather
     init {
         getWeather()
-        getFavWeather()
+        refreshFavWeather()
     }
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getWeather(){
+    fun getWeather(lat:Double=31.15, lon:Double=32.18){
         viewModelScope.launch {
            WeatherRepo( remoteSource = OpenMeteoWeather(),
-               RoomWeatherDataSource()).getForecast().collect { weatherData->
+               RoomWeatherDataSource()).getForecast(lat,lon).collect { weatherData->
                when(weatherData){
                    is WeatherData.DailyWeatherData -> _weatherData.value=weatherData.daily.toUIWeather()
                    is WeatherData.ForecastWeatherData->_forecastData.value=weatherData.forecast.map { it.toUIForecastWeather() }
@@ -64,13 +62,13 @@ class WeatherViewModel: ViewModel() {
         viewModelScope.launch {
             WeatherRepo( remoteSource = OpenMeteoWeather(),
                 RoomWeatherDataSource()).removeToFav(favWeather)
-
+            refreshFavWeather()
 
         }
 
     }
 
-    fun getFavWeather(){
+    fun refreshFavWeather(){
         viewModelScope.launch {
             WeatherRepo( remoteSource = OpenMeteoWeather(),
                 RoomWeatherDataSource()).getFavWeatherList().collect {

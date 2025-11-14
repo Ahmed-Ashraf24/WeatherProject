@@ -50,7 +50,7 @@ dependencies {
     kapt ("androidx.room:room-compiler:2.8.2")
     implementation ("androidx.room:room-ktx:2.8.2")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-// gson converter
+    implementation ("com.google.android.gms:play-services-location:21.2.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("androidx.navigation:navigation-compose:2.9.5")
 
