@@ -18,11 +18,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WeatherDAO {
-    @Transaction
     @Query("SELECT * FROM Daily_Table")
     fun getCachedDaily(): Flow<DailyWithHourly>
 
-    @Transaction
     @Query("SELECT * FROM Forecast_Table")
     fun getCachedForecast(): Flow<List<ForecastWithHourly>>
 
