@@ -13,7 +13,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -23,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.weatherapp.Utility.Conversion.ConversionUtilities
 import com.example.weatherproject.Presentation.UIModel.UIWeather
+import com.example.weatherproject.Presentation.UIModel.toFavWeather
 import com.example.weatherproject.Presentation.ViewModel.WeatherViewModel
 import com.example.weatherproject.Presentation.ui.Component.Grid
 import com.example.weatherproject.Presentation.ui.Component.HourlyWeatherDetail
@@ -34,6 +39,7 @@ import com.example.weatherproject.Presentation.ui.theme.colorPalList
 @Composable
 fun DetailsScreen(navController: NavController, weatherViewModel: WeatherViewModel,index:Int) {
     val weatherState = weatherViewModel.forecastData.collectAsState()
+    var isFav by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -53,22 +59,34 @@ fun DetailsScreen(navController: NavController, weatherViewModel: WeatherViewMod
         ) {
             item {
                 weatherState.value?.get(index)?.let { weather ->
-                    WeatherDetailComponent(Modifier.padding(top = 38.dp), weather = weather.run {
+                    WeatherDetailComponent(
+                        Modifier.padding(top = 38.dp), weather = weather.run {
 
-                                UIWeather(
-                                    temp = weather.temp,
-                                    condition = weather.condition,
-                                    city = weather.city,
-                                    hourly = weather.hourly,
-                                    date = weather.date,
-                                    weatherIconRes = weather.weatherIconRes,
-                                    windSpeed = weather.windSpeed,
-                                    uv = 0.5,
-                                    isMorning = true,
-                                )
+                        UIWeather(
+                            temp = weather.temp,
+                            condition = weather.condition,
+                            city = weather.city,
+                            hourly = weather.hourly,
+                            date = ConversionUtilities.getDayName(weather.date),
+                            weatherIconRes = weather.weatherIconRes,
+                            windSpeed = weather.windSpeed,
+                            uv = 0.5,
+                            isMorning = true,
+                        )
 
-                    }
-                    )
+                    }, isFav = isFav, onFavClicked = {
+                            if (!isFav) {
+                                weatherViewModel.addFavWeather(weather.toFavWeather())
+                            }
+                            else{
+                                weatherViewModel.removeFavWeather(weather.toFavWeather())
+                            }
+                            isFav=!isFav
+
+                    },
+                        onListClicked = {navController.navigate("fav")}
+
+                )
                 }
             }
             item {
@@ -86,7 +104,7 @@ fun DetailsScreen(navController: NavController, weatherViewModel: WeatherViewMod
             }
 
             item {
-               weatherState.value?.get(index)?.let {   Grid(uiForecastWeather = it)}
+               weatherState.value?.get(index)?.let {   Grid(Modifier.padding(bottom = 15.dp),uiForecastWeather = it)}
             }
         }
 

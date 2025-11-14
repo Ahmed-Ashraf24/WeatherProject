@@ -25,7 +25,7 @@ fun DailyWeather.toUIWeather(): UIWeather{
         windSpeed = this.windSpeed,
         uv = this.uv,
         hourly = this.hourly.map { it.toUIHourlyData() },
-        date = ConversionUtilities.getDayName(this.date),
+        date = this.date,
         condition = IconConstraints.getDescription(weatherCode),
         isMorning = this.isMorning
     )

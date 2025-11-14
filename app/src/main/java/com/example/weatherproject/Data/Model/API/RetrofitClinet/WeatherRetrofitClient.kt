@@ -1,6 +1,6 @@
-package com.example.weatherproject.Data.DataSource.RemoteSource
+package com.example.weatherproject.Data.Model.API.RetrofitClinet
 
-import com.example.weatherproject.Data.Model.API.WeatherAPI
+import com.example.weatherproject.Data.Model.API.service.WeatherAPI
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

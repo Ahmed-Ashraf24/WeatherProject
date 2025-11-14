@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.sp
 import com.example.weatherproject.R
 import java.sql.Time
 
-@Preview
 @Composable
 fun HourlyWeatherDetail(modifier: Modifier = Modifier,time: String?,temp:String?,iconRes:Int?) {
     Column(modifier,horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {

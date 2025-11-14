@@ -4,14 +4,17 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherproject.Data.DataSource.RemoteSource.WeatherRetrofitClient
-import com.example.weatherproject.Data.Mapper.WeatherMapper
-import com.example.weatherproject.Data.Model.API.WeatherData
+import com.example.weatherproject.Data.DataSource.LocalSource.Room.RoomWeatherDataSource
+import com.example.weatherproject.Data.DataSource.RemoteSource.OpenMeteoAPI.OpenMeteoWeather
+import com.example.weatherproject.Data.Model.API.RetrofitClinet.WeatherRetrofitClient
+import com.example.weatherproject.Domain.Entity.WeatherData
 import com.example.weatherproject.Data.Repository.WeatherRepo
+import com.example.weatherproject.Domain.Entity.FavWeather
 import com.example.weatherproject.Domain.Entity.toUIForecastWeather
 import com.example.weatherproject.Domain.Entity.toUIWeather
 import com.example.weatherproject.Presentation.UIModel.UIForecastWeather
 import com.example.weatherproject.Presentation.UIModel.UIWeather
+import com.example.weatherproject.Presentation.UIModel.toFavWeather
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,16 +26,24 @@ class WeatherViewModel: ViewModel() {
     val weatherData: StateFlow<UIWeather?> = _weatherData
     private val _forecastData =MutableStateFlow<List<UIForecastWeather>?>(null)
     val forecastData: StateFlow<List<UIForecastWeather>?> = _forecastData
+    private val _favWeather =MutableStateFlow<List<UIForecastWeather>?>(null)
+    val favWeather: StateFlow<List<UIForecastWeather>?> = _favWeather
     init {
         getWeather()
+        getFavWeather()
     }
     @RequiresApi(Build.VERSION_CODES.O)
     fun getWeather(){
         viewModelScope.launch {
-           WeatherRepo(WeatherRetrofitClient.api).getForecast().collect {weatherData->
+           WeatherRepo( remoteSource = OpenMeteoWeather(),
+               RoomWeatherDataSource()).getForecast().collect { weatherData->
                when(weatherData){
                    is WeatherData.DailyWeatherData -> _weatherData.value=weatherData.daily.toUIWeather()
                    is WeatherData.ForecastWeatherData->_forecastData.value=weatherData.forecast.map { it.toUIForecastWeather() }
+                   is WeatherData.CombinedWeatherData ->{
+                       _weatherData.value=weatherData.daily.toUIWeather()
+                       _forecastData.value=weatherData.forecast.map { it.toUIForecastWeather() }
+                   }
                }
 
            }
@@ -40,4 +51,37 @@ class WeatherViewModel: ViewModel() {
         }
 
     }
-}
+    fun addFavWeather(favWeather: FavWeather){
+        viewModelScope.launch {
+            WeatherRepo( remoteSource = OpenMeteoWeather(),
+                RoomWeatherDataSource()).addToFav(favWeather)
+
+
+            }
+
+        }
+    fun removeFavWeather(favWeather: FavWeather){
+        viewModelScope.launch {
+            WeatherRepo( remoteSource = OpenMeteoWeather(),
+                RoomWeatherDataSource()).removeToFav(favWeather)
+
+
+        }
+
+    }
+
+    fun getFavWeather(){
+        viewModelScope.launch {
+            WeatherRepo( remoteSource = OpenMeteoWeather(),
+                RoomWeatherDataSource()).getFavWeatherList().collect {
+                    favWeathers ->
+                    _favWeather.value=_forecastData.value?.filter {forecast-> favWeathers.any{
+                        it.date==forecast.date
+                    } }
+            }
+
+        }
+
+    }
+
+    }

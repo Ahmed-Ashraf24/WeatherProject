@@ -1,6 +1,5 @@
 package com.example.weatherproject.Presentation.ui.Component
 
-import android.widget.GridView
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,13 +7,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.weatherproject.Presentation.UIModel.UIForecastWeather
 
 @Composable
 fun Grid(modifier: Modifier = Modifier, uiForecastWeather: UIForecastWeather) {
-    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
+    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
         Row(Modifier
             .fillMaxWidth()
             .padding(5.dp)) {
@@ -48,7 +46,7 @@ fun Grid(modifier: Modifier = Modifier, uiForecastWeather: UIForecastWeather) {
                 Modifier
                     .weight(1f)
                     .padding(end = 10.dp),
-                "apparent tempreture",
+                "apparent temp",
                 value = uiForecastWeather.apparentTemp
             )
             WeatherAttribute(Modifier.weight(1f), "shortwave Radiation", value = uiForecastWeather.shortwaveRadiation)

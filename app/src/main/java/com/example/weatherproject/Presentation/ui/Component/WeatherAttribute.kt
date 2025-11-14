@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.weatherproject.Presentation.ui.theme.Typography
 import com.example.weatherproject.Presentation.ui.theme.colorPalList
 
 @Composable
@@ -32,8 +34,8 @@ fun WeatherAttribute(modifier: Modifier = Modifier,label:String,value:String) {
 
             horizontalAlignment = Alignment.Start
         ) {
-            Text(label, color = Color.White.copy(alpha = .6f))
-            Text(value, color = Color.White)
+            Text(label, style = Typography.labelMedium.copy(fontSize = 18.sp), color = Color.White.copy(alpha = .6f), modifier = Modifier.padding(bottom = 5.dp))
+            Text(value, style = Typography.labelMedium.copy(fontSize = 18.sp),color = Color.White)
         }
     }
 }
