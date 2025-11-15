@@ -20,7 +20,7 @@ object ConversionUtilities {
             val dateTime = LocalDateTime.parse(localTime ?: "2025-11-10T00:00", inputFormatter)
             val outputFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH)
             dateTime.format(outputFormatter)
-                .uppercase(Locale.ENGLISH) // ensure AM/PM matches parser
+                .uppercase(Locale.ENGLISH)
         } catch (e: Exception) {
             e.printStackTrace()
             "12:00 AM"
@@ -34,11 +34,6 @@ object ConversionUtilities {
             val time = LocalTime.parse(timeString.trim().uppercase(Locale.ENGLISH), formatter)
             val startDay = LocalTime.of(6, 0)
             val endDay = LocalTime.of(18, 0)
-            Log.d(
-                "checkingtime", "time: $timeString isDay : ${
-                    time in startDay..endDay
-                }"
-            )
             time in startDay..endDay
 
         } catch (e: Exception) {
