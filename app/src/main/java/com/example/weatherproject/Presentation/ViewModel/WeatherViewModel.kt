@@ -11,6 +11,7 @@ import com.example.weatherproject.Data.Repository.WeatherRepo
 import com.example.weatherproject.Domain.Entity.FavWeather
 import com.example.weatherproject.Domain.Entity.toUIForecastWeather
 import com.example.weatherproject.Domain.Entity.toUIWeather
+import com.example.weatherproject.Domain.IRepo.IWeatherRepo
 import com.example.weatherproject.Presentation.UIModel.UIForecastWeather
 import com.example.weatherproject.Presentation.UIModel.UIWeather
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +27,8 @@ class WeatherViewModel(): ViewModel() {
     val forecastData: StateFlow<List<UIForecastWeather>?> = _forecastData
     private val _favWeather =MutableStateFlow<List<UIForecastWeather>?>(null)
     val favWeather: StateFlow<List<UIForecastWeather>?> = _favWeather
+    private val repo =WeatherRepo(OpenMeteoWeather(), RoomWeatherDataSource())
+
     init {
         getWeather()
         refreshFavWeather()
@@ -33,8 +36,7 @@ class WeatherViewModel(): ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun getWeather(lat:Double=31.15, lon:Double=32.18){
         viewModelScope.launch {
-           WeatherRepo( remoteSource = OpenMeteoWeather(),
-               RoomWeatherDataSource()).getForecast(lat,lon).collect { weatherData->
+          repo.getForecast(lat,lon).collect { weatherData->
                when(weatherData){
                    is WeatherData.DailyWeatherData -> _weatherData.value=weatherData.daily.toUIWeather()
                    is WeatherData.ForecastWeatherData->_forecastData.value=weatherData.forecast.map { it.toUIForecastWeather() }
@@ -51,8 +53,7 @@ class WeatherViewModel(): ViewModel() {
     }
     fun addFavWeather(favWeather: FavWeather){
         viewModelScope.launch {
-            WeatherRepo( remoteSource = OpenMeteoWeather(),
-                RoomWeatherDataSource()).addToFav(favWeather)
+        repo.addToFav(favWeather)
 
 
             }
@@ -60,9 +61,7 @@ class WeatherViewModel(): ViewModel() {
         }
     fun removeFavWeather(favWeather: FavWeather){
         viewModelScope.launch {
-            WeatherRepo( remoteSource = OpenMeteoWeather(),
-                RoomWeatherDataSource()).removeToFav(favWeather)
-            refreshFavWeather()
+            repo.removeToFav(favWeather)
 
         }
 
@@ -70,8 +69,7 @@ class WeatherViewModel(): ViewModel() {
 
     fun refreshFavWeather(){
         viewModelScope.launch {
-            WeatherRepo( remoteSource = OpenMeteoWeather(),
-                RoomWeatherDataSource()).getFavWeatherList().collect {
+           repo.getFavWeatherList().collect {
                     favWeathers ->
                     _favWeather.value=_forecastData.value?.filter {forecast-> favWeathers.any{
                         it.date==forecast.date

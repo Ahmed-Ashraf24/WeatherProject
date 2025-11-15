@@ -34,7 +34,6 @@ fun FavWeatherScreen(
     navController: NavController,
     viewModel: WeatherViewModel
 ) {
-    viewModel.refreshFavWeather()
     val favorites by viewModel.favWeather.collectAsState()
 
     Box(
