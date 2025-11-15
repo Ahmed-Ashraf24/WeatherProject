@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
-class WeatherViewModel(): ViewModel() {
+class WeatherViewModel(private val repo: IWeatherRepo) : ViewModel() {
 
     private val _weatherData =MutableStateFlow<UIWeather?>(null)
     val weatherData: StateFlow<UIWeather?> = _weatherData
@@ -27,7 +27,7 @@ class WeatherViewModel(): ViewModel() {
     val forecastData: StateFlow<List<UIForecastWeather>?> = _forecastData
     private val _favWeather =MutableStateFlow<List<UIForecastWeather>?>(null)
     val favWeather: StateFlow<List<UIForecastWeather>?> = _favWeather
-    private val repo =WeatherRepo(OpenMeteoWeather(), RoomWeatherDataSource())
+
 
     init {
         getWeather()

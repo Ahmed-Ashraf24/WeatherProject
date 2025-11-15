@@ -17,7 +17,11 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.weatherproject.Data.DataSource.LocalSource.Room.RoomWeatherDataSource
+import com.example.weatherproject.Data.DataSource.RemoteSource.OpenMeteoAPI.OpenMeteoWeather
+import com.example.weatherproject.Data.Repository.WeatherRepo
 import com.example.weatherproject.Presentation.ViewModel.WeatherViewModel
+import com.example.weatherproject.Presentation.ViewModel.Fatory.WeatherViewModelFactory
 import com.example.weatherproject.Presentation.ui.Screens.DetailsScreen
 import com.example.weatherproject.Presentation.ui.Screens.FavWeatherScreen
 import com.example.weatherproject.Presentation.ui.Screens.TodayScreen
@@ -28,7 +32,9 @@ import com.google.android.gms.location.*
 class MainActivity : ComponentActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private val viewModel: WeatherViewModel by viewModels()
+    private val viewModel: WeatherViewModel by viewModels {
+        WeatherViewModelFactory(WeatherRepo(OpenMeteoWeather(), RoomWeatherDataSource()))
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private val requestPermissionLauncher =
