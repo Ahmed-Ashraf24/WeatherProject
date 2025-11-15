@@ -12,34 +12,6 @@ import com.example.weatherproject.Domain.Entity.ForecastWeather
 import com.example.weatherproject.Domain.Entity.HourlyDetail
 
 object ForecastMapper {
-    fun toForecastWeather(weatherResponse: WeatherResponse): List<ForecastWeather> {
-        val forecastList = mutableListOf<ForecastWeather>()
-        weatherResponse.daily.time.forEachIndexed { index, date ->
-            forecastList.add(
-                ForecastWeather(
-                    city = weatherResponse.timezone,
-                    temp = "${weatherResponse.daily.temperature_2m_min[index]}/${weatherResponse.daily.temperature_2m_max[index]} ${weatherResponse.current_weather_units.temperature}",
-                    weatherCode = weatherResponse.daily.weathercode[index],
-                    windSpeed = "${weatherResponse.daily.wind_speed_10m_max[index]} ${weatherResponse.daily_units.wind_speed_10m_max}",
-                    uv = "${weatherResponse.daily.uv_index_max[index]} ${weatherResponse.daily_units.uv_index_max}",
-                    uvClearSky = "${weatherResponse.daily.uv_index_clear_sky_max[index]} ${weatherResponse.daily_units.uv_index_clear_sky_max}",
-                    hourly = HourlyMapper.toHourlyData(
-                        weatherResponse.hourly,
-                        date,
-                        weatherResponse.hourly_units
-                    ),
-                    date = date,
-                    windGust = "${weatherResponse.daily.wind_gusts_10m_max[index]} ${weatherResponse.daily_units.wind_gusts_10m_max}",
-                    precipitation = "${weatherResponse.daily.precipitation_sum[index]} ${weatherResponse.daily_units.precipitation_sum}",
-                    evapotranspiration = "${weatherResponse.daily.et0_fao_evapotranspiration[index]} ${weatherResponse.daily_units.et0_fao_evapotranspiration}",
-                    apparentTemp = "${weatherResponse.daily.apparent_temperature_min[index]} / ${weatherResponse.daily.apparent_temperature_max[index]} ${weatherResponse.daily_units.temperature_2m_max}",
-                    shortwaveRadiation = "${weatherResponse.daily.shortwave_radiation_sum[index]} ${weatherResponse.daily_units.shortwave_radiation_sum}",
-                )
-            )
-        }
-        return forecastList
-
-    }
 
     fun toForecastEntity(forecastWithHourly: ForecastWithHourly): ForecastWeather {
         return ForecastWeather(

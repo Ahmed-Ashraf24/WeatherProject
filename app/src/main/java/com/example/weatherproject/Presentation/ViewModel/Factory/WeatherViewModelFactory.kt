@@ -1,4 +1,4 @@
-package com.example.weatherproject.Presentation.ViewModel.Fatory
+package com.example.weatherproject.Presentation.ViewModel.Factory
 
 import android.os.Build
 import androidx.annotation.RequiresApi
