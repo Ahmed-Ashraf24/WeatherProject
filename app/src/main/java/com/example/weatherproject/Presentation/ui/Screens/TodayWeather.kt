@@ -39,7 +39,7 @@ import com.example.weatherproject.Presentation.ui.theme.colorPalList
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TodayScreen(navController: NavController,viewModel: WeatherViewModel) {
+fun TodayScreen(navController: NavController, viewModel: WeatherViewModel) {
     val weatherState = viewModel.weatherData.collectAsState()
     val forecast = viewModel.forecastData.collectAsState()
     var isFav by remember { mutableStateOf(false) }
@@ -54,47 +54,56 @@ fun TodayScreen(navController: NavController,viewModel: WeatherViewModel) {
                 )
             )
     ) {
-        LazyColumn(Modifier
-            .fillMaxSize()
-            .padding(vertical = 10.dp)) {
+        LazyColumn(
+            Modifier
+                .fillMaxSize()
+                .padding(vertical = 10.dp)
+        ) {
             item {
-                weatherState.value?.let { WeatherDetailComponent(Modifier.padding(top = 38.dp), weather = it.copy(date = "Today"), isFav = isFav,
-                    onFavClicked = {
-                    if (!isFav) {
-                    viewModel.addFavWeather(it.toFavWeather())
-                    }
-                    else{
-                    viewModel.removeFavWeather(it.toFavWeather())
-                    }
-                    isFav=!isFav
+                weatherState.value?.let {
+                    WeatherDetailComponent(
+                        Modifier.padding(top = 38.dp),
+                        weather = it.copy(date = "Today"),
+                        isFav = isFav,
+                        onFavClicked = {
+                            if (!isFav) {
+                                viewModel.addFavWeather(it.toFavWeather())
+                            } else {
+                                viewModel.removeFavWeather(it.toFavWeather())
+                            }
+                            isFav = !isFav
 
-                },
-                    onListClicked = {navController.navigate("fav")}) }
+                        },
+                        onListClicked = { navController.navigate("fav") })
+                }
             }
             item {
                 LazyRow(Modifier.padding(vertical = 15.dp, horizontal = 10.dp)) {
                     items(24) {
-                        HourlyWeatherDetail(modifier = Modifier.padding(end = 30.dp),
+                        HourlyWeatherDetail(
+                            modifier = Modifier.padding(end = 30.dp),
                             time = weatherState.value?.hourly[it]?.time,
                             temp = weatherState.value?.hourly[it]?.hourlyDetail?.temperature_2m,
-                            iconRes = weatherState.value?.hourly[it]?.hourlyDetail?.weatherIconRes)
+                            iconRes = weatherState.value?.hourly[it]?.hourlyDetail?.weatherIconRes
+                        )
                     }
                 }
 
             }
             items(7) {
                 ForCastWeatherItem(
-                    modifier = Modifier.padding(
-                        vertical = 10.dp,
-                        horizontal = 10.dp
-                    ).clickable{navController.navigate("detail/${it}")}
-                , forecast.value?.get(it)
+                    modifier = Modifier
+                        .padding(
+                            vertical = 10.dp,
+                            horizontal = 10.dp
+                        )
+                        .clickable { navController.navigate("detail/${it}") }, forecast.value?.get(it)
                 )
-
-            }
 
             }
 
         }
 
     }
+
+}
